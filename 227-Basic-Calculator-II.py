@@ -4,38 +4,49 @@ class Solution(object):
         :type s: str
         :rtype: int
         """
+        while s[-1]==' ':
+            s = s[:-1]
+        ops = set(['+','-','*','/'])
         nums = []
-        for i in xrange(len(s)-1,-1,-1):
-            if s[i] in ['+','-','*','/']:
-                nums = [int(s[i+1:])] + nums
-                nums = [str(s[i])] + nums
-                s = s[:i]
-        nums = [int(s[i])] + nums
-        print nums
+        i,j = 0,0
+        num = ''
+        for i in xrange(len(s)):
+            if s[i] in ops:
+                nums.append(num)
+                nums.append(s[i])
+                num = ''
+            elif s[i].isdigit():
+                num = num+s[i]
+                if i==len(s)-1:
+                    nums.append(num)
+        s = nums
+        #print s
         stack = []
-        while nums:
-            item = nums.pop(0)
-            if item=='*' and stack:
-                num2 = nums.pop(0)
-                num1 = stack.pop()
-                stack.append(num1*num2)
-            elif item=='/' and stack:
-                num2 = nums.pop(0)
-                num1 = stack.pop()
-                stack.append(num1/num2)
-            else:
-                stack.append(item)
-        print stack
+        i = 0
+        while i < len(s):
+            if s[i].isdigit():
+                stack.append(int(s[i]))
+                i += 1
+                continue
+            if s[i]=='+' or s[i]=='-':
+                stack.append(s[i])
+                i += 1
+                continue
+            if s[i]=="*":
+                stack[-1] = stack[-1]*int(s[i+1])
+                i += 2
+            elif s[i]=="/":
+                stack[-1] = stack[-1]/int(s[i+1])
+                i += 2
+        #print stack
+        i = 0
         res = 0
-        while stack:
-            item = stack.pop(0)
-            if item=='+':
-                num = stack.pop(0)
-                res += num
-            elif item=='-':
-                num = stack.pop(0)
-                res -= num
-            else:
-                res += item
+        stack = ['+'] + stack
+        while i < len(stack):
+            if stack[i]=="+":
+                res = res + stack[i+1]
+                i += 2
+            elif stack[i]=="-":
+                res = res - stack[i+1]
+                i += 2
         return res
-        
